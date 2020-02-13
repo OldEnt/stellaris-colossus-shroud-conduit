@@ -1,0 +1,370 @@
+namespace = colossus_shroud_conduit
+
+# Shrouded
+planet_event = {
+	id = colossus_shroud_conduit.100
+	hide_window = yes
+
+	is_triggered_only = yes
+
+	immediate = {
+		if = {
+			limit = {
+				exists = owner
+				owner = { NOT = { is_same_value = from.owner } }
+			}
+			from.owner = {
+				country_event = { id = colossus_shroud_conduit.101 }
+			}
+		}
+
+		# Swarm Situation Log counter
+		if = {
+			limit = {
+				owner = { is_country_type = swarm }
+			}
+			every_country = {
+				limit = { has_event_chain = "prethoryn_scourge_chain" }
+				add_event_chain_counter = {
+					event_chain = "prethoryn_scourge_chain"
+					counter = "infested_worlds"
+					amount = -1 
+				}
+				add_event_chain_counter = {
+					event_chain = "prethoryn_scourge_chain"
+					counter = "infested_worlds_cleansed"
+					amount = 1 
+				}
+			}
+		}
+
+		if = {
+			limit = {
+				exists = owner
+				owner = {
+					NOT = { is_same_value = from.owner }
+					OR = {
+						is_country_type = default
+						is_country_type = fallen_empire
+						is_country_type = awakened_fallen_empire
+					}
+				}
+			}
+			# Generate threat
+			add_threat = { who = from.owner amount = 3 }
+			# modifier for allies + those upset by genocide
+			every_country = {
+				limit = {
+					NOR = {
+						is_same_value = from.owner
+						is_same_value = root.owner
+						AND = {
+							has_federation = yes
+							is_in_federation_with = from.owner
+						}
+					}
+					OR = {
+						has_communications = from.owner
+						has_communications = root.owner
+					}
+					OR = {
+						AND = {
+							has_federation = yes
+							is_in_federation_with = root.owner
+						}
+						has_ai_personality = awakened_fallen_empire_xenophile
+						AND = {
+							is_country_type = default
+							OR = {
+								is_egalitarian = yes
+								is_xenophile = yes
+								is_spiritualist = yes
+							}
+						}
+					}
+				}
+				add_opinion_modifier = {
+					modifier = opinion_swept_a_world
+					who = from.owner
+				}
+			}
+			# modifiers for victim
+			owner = {
+				add_opinion_modifier = {
+					modifier = opinion_swept_my_world
+					who = from.owner
+				}
+				if = {
+					limit = { NOT = { has_ethic = ethic_gestalt_consciousness } }
+					add_modifier = {
+						modifier = colossus_victim
+						days = 10800 # 30 years
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				exists = owner
+				owner = { is_country_type = primitive }
+			}
+			# modifier for allies + those upset by genocide
+			every_country = {
+				limit = {
+					NOT = { is_same_value = from.owner }
+					OR = {
+						has_communications = from.owner
+						has_communications = root.owner
+					}
+					is_country_type = default
+					NOR = {
+						is_xenophobe = yes
+						is_homicidal = yes
+						is_xenophile = yes
+					}
+				}
+				add_opinion_modifier = {
+					modifier = opinion_swept_a_primitive_world
+					who = from.owner
+				}
+			}
+			every_country = {
+				limit = {
+					NOT = { is_same_value = from.owner }
+					OR = {
+						has_communications = from.owner
+						has_communications = root.owner
+					}
+					OR = {
+						has_ai_personality = awakened_fallen_empire_xenophile
+						AND = {
+							is_country_type = default
+							is_xenophile = yes
+						}
+					}
+				}
+				add_opinion_modifier = {
+					modifier = opinion_swept_a_primitive_world_phile
+					who = from.owner
+				}
+			}
+		}
+		# Add war exhaustion to planet owner 
+		owner = {
+			add_static_war_exhaustion = {
+				attacker = from.fleet.owner
+				location = root
+				value_for_planet_destruction = 1.0
+			}
+		}
+		destroy_colony = yes
+		#add_modifier = {
+		#	modifier = shroud_conduit_bombarded
+		#	days = 3600
+		#}		
+		# Special graphics for Habitats and Ring Worlds
+		#if = {
+		#	limit = {
+		#		is_planet_class = pc_habitat
+		#	}
+		#	 spawn_habitat_shroud_conduit_effect = yes
+		#}
+		#else_if = {
+		#	limit = {
+		#		is_planet_class = pc_ringworld_habitable
+		#	}
+		#	 spawn_ringworld_shroud_conduit_effect = yes
+		#}
+		if = {
+			limit = {
+				OR = {
+					is_planet_class = pc_habitat
+					is_planet_class = pc_ringworld_habitable
+				}
+			}
+			# nothing
+		}
+		else = {
+			switch = {
+				trigger = is_planet_class
+				pc_desert = { change_pc = pc_shrouded }
+				pc_arid = { change_pc = pc_shrouded }
+				pc_savannah = { change_pc = pc_shrouded }
+				pc_ocean = { change_pc = pc_shrouded }
+				pc_continental = { change_pc = pc_shrouded }
+				pc_tropical = { change_pc = pc_shrouded }
+				pc_tundra = { change_pc = pc_shrouded }
+				pc_arctic = { change_pc = pc_shrouded }
+				pc_alpine = { change_pc = pc_shrouded }
+				# Added vanilla
+				pc_nuked = { change_pc = pc_shrouded }
+				pc_gaia = { change_pc = pc_shrouded }
+				pc_relic = { change_pc = pc_shrouded }
+				pc_city = { change_pc = pc_shrouded }
+				pc_machine = { change_pc = pc_shrouded }
+				pc_hive = { change_pc = pc_shrouded }
+				# Added vanilla uninhabitable because you never know when someone decides to mod in habitability
+				pc_asteroid = { change_pc = pc_shrouded }
+				pc_rare_crystal_asteroid = { change_pc = pc_shrouded }
+				pc_barren_cold = { change_pc = pc_shrouded }
+				pc_broken = { change_pc = pc_shrouded }
+				pc_egg_cracked = { change_pc = pc_shrouded }
+				pc_frozen = { change_pc = pc_shrouded }
+				pc_gas_giant = { change_pc = pc_shrouded }
+				pc_molten = { change_pc = pc_shrouded }
+				pc_gray_goo = { change_pc = pc_shrouded }
+				pc_shattered = { change_pc = pc_shrouded }
+				pc_toxic = { change_pc = pc_shrouded }
+				# Disabled Contingency world until further testing
+				# pc_ai
+				# Planetary Diversity and addons
+				pc_tidallylocked = { change_pc = pc_shrouded }
+				pc_hothouse = { change_pc = pc_shrouded }
+				pc_methane = { change_pc = pc_shrouded }
+				pc_ammonia = { change_pc = pc_shrouded }
+				pc_cascadian = { change_pc = pc_shrouded }
+				pc_swamp = { change_pc = pc_shrouded }
+				pc_oasis = { change_pc = pc_shrouded }
+				pc_steppe = { change_pc = pc_shrouded }
+				pc_frozen_desert = { change_pc = pc_shrouded }
+				pc_mesa = { change_pc = pc_shrouded }
+				pc_hadesert = { change_pc = pc_shrouded }
+				pc_geothermal = { change_pc = pc_shrouded }
+				pc_desertislands = { change_pc = pc_shrouded }
+				pc_sandsea = { change_pc = pc_shrouded }
+				pc_mangrove = { change_pc = pc_shrouded }
+				pc_glacial = { change_pc = pc_shrouded }
+				pc_subarctic = { change_pc = pc_shrouded }
+				pc_hajungle = { change_pc = pc_shrouded }
+				pc_floating = { change_pc = pc_shrouded }
+				pc_crystal = { change_pc = pc_shrouded }
+				pc_pdcity = { change_pc = pc_shrouded }
+				pc_mushroom = { change_pc = pc_shrouded }
+				pc_boreal = { change_pc = pc_shrouded }
+				pc_archive = { change_pc = pc_shrouded }
+				pc_biolumen = { change_pc = pc_shrouded }
+				pc_superhabitable = { change_pc = pc_shrouded }
+				pc_graveyard = { change_pc = pc_shrouded }
+				pc_technoorganic = { change_pc = pc_shrouded }
+				pc_antarctic = { change_pc = pc_shrouded }
+				pc_ecocity = { change_pc = pc_shrouded }
+				pc_retinal = { change_pc = pc_shrouded }
+				pc_prairie = { change_pc = pc_shrouded }
+				pc_machine_factory = { change_pc = pc_shrouded }
+				pc_irradiated = { change_pc = pc_shrouded }
+				pc_karst = { change_pc = pc_shrouded }
+				pc_forest = { change_pc = pc_shrouded }
+				pc_med = { change_pc = pc_shrouded }
+				pc_snow = { change_pc = pc_shrouded }
+				pc_ash = { change_pc = pc_shrouded }
+				pc_primal = { change_pc = pc_shrouded }
+				pc_aquatic = { change_pc = pc_shrouded }
+				# Need to check Habitat Diversity worlds from Planetary Diversity
+				pc_gghab = { change_pc = pc_shrouded }
+				pc_tmhab = { change_pc = pc_shrouded }
+				pc_tmhab2 = { change_pc = pc_shrouded }
+				pc_mmhab = { change_pc = pc_shrouded }
+				pc_mmhab2 = { change_pc = pc_shrouded }
+				pc_bhab = { change_pc = pc_shrouded }
+				pc_bchab = { change_pc = pc_shrouded }
+				pc_mhab = { change_pc = pc_shrouded }
+				pc_fhab = { change_pc = pc_shrouded }			
+				pc_fmhab = { change_pc = pc_shrouded }
+				pc_mehab = { change_pc = pc_shrouded }
+				# Special effect for Planetary Diversity pc_pdshroud maybe?
+				pc_pdshroud = { change_pc = pc_shrouded }
+			}
+		add_deposit = d_zro_deposit_1
+		}
+		# For Infested worlds
+		if = {
+			limit = { is_planet_class = pc_infested }
+			change_pc = pc_shrouded
+			add_deposit = d_zro_deposit_1
+			}
+		}
+	}
+
+country_event = {
+	id = colossus_shroud_conduit.101
+	title = colossus_shroud_conduit.101.name
+	desc = {
+		text = colossus_shroud_conduit.101.nobots.desc
+		trigger = {
+			from = {
+				NOT = { 
+					OR = {
+						is_planet_class = pc_infested 
+						is_planet_class = pc_barren
+						is_planet_class = pc_barren_cold
+					}
+				}
+				count_pops = {
+					count < 1
+				}
+			}
+		}
+	}
+	desc = {
+		text = colossus_shroud_conduit.101.bots.desc
+		trigger = {
+			from = {
+				count_pops = {
+					count > 0
+				}
+			}
+		}
+	}
+	desc = {
+		text = colossus_shroud_conduit.101.infested.desc
+		trigger = {
+			from = {
+				OR = {
+					is_planet_class = pc_infested 
+					is_planet_class = pc_barren
+					is_planet_class = pc_barren_cold
+				}
+			}
+		}
+	}
+	picture = GFX_evt_colossus_shroud_conduit_planet_beam
+	show_sound = event_solar_fusion
+	location = from
+	
+
+	is_triggered_only = yes
+
+	trigger = {
+		NOT = { has_country_flag = fired_shroud_conduit }
+	}
+
+	immediate = {
+		set_country_flag = fired_shroud_conduit
+	}
+
+	option = {
+		name = OK
+		trigger = {
+			NOR = {
+				has_valid_civic = civic_fanatic_purifiers
+				has_valid_civic = civic_machine_terminator
+			}
+		}
+	}
+
+	option = {
+		name = colossus_shroud_conduit.101.a.purifexter
+		trigger = {
+			OR = {
+				has_valid_civic = civic_fanatic_purifiers
+				has_valid_civic = civic_machine_terminator
+			}
+		}
+		add_monthly_resource_mult = {
+			resource = unity
+			value = 60
+			min = 600
+			max = 3000
+		}
+	}
+}

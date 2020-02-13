@@ -1,0 +1,24 @@
+weapon_component_template = { # Shroud Conduit
+	key = "PLANET_KILLER_SHROUD_CONDUIT"
+	size = planet_killer
+	entity = "invisible_turret_entity"
+	type = planet_killer
+	static_rotation = yes
+	use_ship_kill_target = no
+	
+	windup = { min = 90 max = 0 }
+	total_fire_time = 30
+	range = 0
+	accuracy = 1.00
+	power = -7500.00
+	cooldown = 30.00
+
+	prerequisites = { "tech_pk_colossus_shroud_conduit" }
+
+	icon = GFX_ship_part_neutron_sweep
+	icon_frame = 1
+
+	component_set = "PLANET_KILLER_SHROUD_CONDUIT"
+
+	planet_destruction_gfx = "neutron_planet_gfx"
+}

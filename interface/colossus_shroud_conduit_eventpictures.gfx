@@ -1,0 +1,11 @@
+spriteTypes = {	
+
+
+	spriteType = {
+		name = "GFX_evt_colossus_shroud_conduit_planet_beam"
+		texturefile = "gfx/event_pictures/colossus_shroud_conduit_planet_beam.dds"
+		masking_texture = "gfx/interface/situation_log/event_mask.dds"
+		alwaystransparent = yes		
+	}
+
+}

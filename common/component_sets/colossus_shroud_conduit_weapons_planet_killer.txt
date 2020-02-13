@@ -1,0 +1,6 @@
+component_set = { # Shroud Conduit
+	key = "PLANET_KILLER_SHROUD_CONDUIT"
+	
+	icon = "GFX_ship_part_neutron_sweep"
+	icon_frame = 1
+}

@@ -1,0 +1,5 @@
+on_destroy_planet_with_PLANET_KILLER_SHROUD_CONDUIT = {
+	events = {
+		colossus_shroud_conduit.100
+	}
+}
