@@ -1,0 +1,69 @@
+namespace = colossus_shroud_conduit
+
+# You may fire when ready
+country_event = {
+	id = colossus_shroud_conduit.200
+    hide_window = yes
+	
+	is_triggered_only = yes
+	
+	immediate = {
+		random_country = {
+			limit = {
+				has_technology = tech_pk_colossus_shroud_conduit
+			}
+			save_global_event_target_as = shroud_conduit_country
+			}
+		random_system = {
+			limit = {
+				any_system_planet = {
+					is_owned_by = root
+					is_capital = yes
+				}
+			}
+		random_system = {
+				limit = {
+					has_star_flag = schroud_system_target
+				}
+				random_fleet_in_system = { limit = { has_fleet_flag = shroud_conduit_pk } 
+					fleet_event = { id = colossus_shroud_conduit.220 days = 1 } }
+				}
+			}
+		}
+	}
+
+fleet_event = {
+	id = colossus_shroud_conduit.220
+	hide_window = yes
+
+	is_triggered_only = yes
+
+	immediate = {
+		solar_system = {
+			random_system_planet = {
+				limit = {
+					has_planet_flag = shroud_target
+				}
+				save_event_target_as = killtarget
+			}
+		}
+		clear_fleet_actions = ROOT
+		queue_actions = {
+			find_closest_planet  = {
+					trigger = {
+						id = schroud_target_1
+						has_planet_flag = shroud_target
+					}
+					found_planet = {
+						move_to = this
+						orbit_planet = this
+						destroy_planet = this
+					}
+				}
+				wait = {
+					duration = 30
+				}
+				destroy_planet = event_target:killtarget
+		}
+	}
+}
