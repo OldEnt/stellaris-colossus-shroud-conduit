@@ -60,10 +60,70 @@ fleet_event = {
 						destroy_planet = this
 					}
 				}
-				wait = {
-					duration = 30
+		}
+	}
+}
+}
+
+# Kill planet in the neighbouring system etc
+country_event = {
+	id = colossus_shroud_conduit.400
+    hide_window = yes
+	
+	is_triggered_only = yes
+	
+	immediate = {
+		random_country = {
+			limit = {
+				has_technology = tech_pk_colossus_shroud_conduit
+			}
+			save_global_event_target_as = shroud_conduit_country
+			}
+		random_system = {
+			limit = {
+				any_system_planet = {
+					is_owned_by = root
+					is_capital = yes
 				}
-				destroy_planet = event_target:killtarget
+			}
+		random_system = {
+				limit = {
+					has_star_flag = shroud_system_origin
+				}
+				random_fleet_in_system = { limit = { has_fleet_flag = shroud_conduit_pk } 
+					fleet_event = { id = colossus_shroud_conduit.440 days = 1 } }
+				}
+			}
+		}
+	}
+
+fleet_event = {
+	id = colossus_shroud_conduit.440
+	hide_window = yes
+
+	is_triggered_only = yes
+
+	immediate = {
+	
+	clear_fleet_actions = ROOT
+	
+	solar_system = {
+			closest_system = {
+				limit = {
+					any_system_planet = { has_planet_flag = shroud_target }
+				}
+				random_system_planet = {
+					limit = { has_planet_flag = shroud_target }
+					save_event_target_as = killtarget
+				}
+				root = {
+					auto_move_to_planet = {
+						target = event_target:killtarget
+						clear_auto_move_on_arrival = no
+						arrival_effect = kill_planet_scripted_effect
+					}
+				}
+			}
 		}
 	}
 }

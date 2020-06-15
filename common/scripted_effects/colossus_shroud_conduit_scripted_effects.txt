@@ -1,0 +1,3 @@
+kill_planet_scripted_effect = {
+	fleet_event = { id = colossus_shroud_conduit.220 }
+}
